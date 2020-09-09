@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using NET_Framework_pratice.Models;
 
 namespace NET_Framework_pratice.Controllers
 {
@@ -12,27 +13,39 @@ namespace NET_Framework_pratice.Controllers
         // GET api/values
         public IHttpActionResult Get()
         {
-            return Ok(new string[] { "value1", "value2" });
+            return Ok(EmployeeDao.Employees);
         }
 
         // GET api/values/5
         public IHttpActionResult Get(int id)
         {
-            return Ok("value");
+            return Ok(EmployeeDao.Employees.FirstOrDefault(x => x.EmployeeId == id));
         }
         // POST api/values
-        public void Post([FromBody]string value)
+        public IHttpActionResult Post(Employee employee )
         {
+            EmployeeDao.Employees.Add(employee);
+            return Ok(EmployeeDao.Employees);
         }
 
         // PUT api/values/5
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(Employee employee)
         {
+            var result = EmployeeDao.Employees.FirstOrDefault(x => x.EmployeeId == employee.EmployeeId);
+            if (result != null)
+            {
+                result.Name = employee.Name;
+                result.PhoneNumber = employee.PhoneNumber;
+                result.Address = employee.Address;
+            }
+            return Ok(EmployeeDao.Employees);
         }
 
         // DELETE api/values/5
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
+            EmployeeDao.Employees.RemoveAll(x => x.EmployeeId == id);
+            return Ok(EmployeeDao.Employees);
         }
     }
 }
